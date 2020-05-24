@@ -242,6 +242,7 @@ package:
 * junit - JUnit style
 * nagios - Nagios/Sensu compatible output /w exit code 2 for failures.
 * silent - No output. Avoids exposing system information (e.g. when serving tests as a healthcheck endpoint).
+* prometheus - Prometheus textfile output.
 
 ## Community Contributions
 
