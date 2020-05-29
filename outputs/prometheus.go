@@ -15,9 +15,9 @@ type Prometheus struct{}
 func (r Prometheus) Output(w io.Writer, results <-chan []resource.TestResult,
 	startTime time.Time, outConfig util.OutputConfig) (exitCode int) {
 
-	var gossDuration, gossResult *prometheus.GaugeVec
-	gossDuration = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "goss_duration",
+	var gossDurationSeconds, gossResult *prometheus.GaugeVec
+	gossDurationSeconds = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "goss_duration_seconds",
 		Help: "Lets you know duration of goss execution",
 	},[]string{"resource_type", "resource_id", "property", "title"})
 	gossResult = prometheus.NewGaugeVec(prometheus.GaugeOpts{
@@ -27,7 +27,7 @@ func (r Prometheus) Output(w io.Writer, results <-chan []resource.TestResult,
 
 	for resultGroup := range results {
 		for _, testResult := range resultGroup {
-			gossDuration.With(prometheus.Labels {
+			gossDurationSeconds.With(prometheus.Labels {
 				"resource_type": testResult.ResourceType,
 				"resource_id": testResult.ResourceId,
 				"property": testResult.Property,
@@ -44,7 +44,7 @@ func (r Prometheus) Output(w io.Writer, results <-chan []resource.TestResult,
 
 	var registry *prometheus.Registry
 	registry = prometheus.NewRegistry()
-	registry.MustRegister(gossDuration, gossResult)
+	registry.MustRegister(gossDurationSeconds, gossResult)
 	mfs, err := registry.Gather()
 	if err != nil {
 		return 1
