@@ -63,10 +63,17 @@ func (r Prometheus) Output(w io.Writer, results <-chan []resource.TestResult,
 		}
 	}
 
+	var gossTestsDurationSeconds prometheus.Gauge
+	gossTestsDurationSeconds = prometheus.NewGauge(prometheus.GaugeOpts{
+		Name: "goss_tests_duration_seconds",
+		Help: "Execution time of goss assertions",
+	})
+	gossTestsDurationSeconds.Set(time.Since(startTime).Seconds())
+
 	var registry *prometheus.Registry
 	registry = prometheus.NewRegistry()
-	registry.MustRegister(gossDurationSeconds, gossResult,
-		gossTestsCount, gossTestsFailedCount, gossTestsSkippedCount)
+	registry.MustRegister(gossDurationSeconds, gossResult, gossTestsCount,
+		gossTestsDurationSeconds, gossTestsFailedCount, gossTestsSkippedCount)
 	mfs, err := registry.Gather()
 	if err != nil {
 		return 1
