@@ -53,7 +53,7 @@ func (r Prometheus) Output(w io.Writer, results <-chan []resource.TestResult,
 				"resource_id": testResult.ResourceId,
 				"property": testResult.Property,
 				"title": testResult.Title,
-			}).Set(float64(testResult.Duration) / 1_000_000_000)
+			}).Set(testResult.Duration.Seconds())
 			gossResult.With(prometheus.Labels {
 				"resource_type": testResult.ResourceType,
 				"resource_id": testResult.ResourceId,
